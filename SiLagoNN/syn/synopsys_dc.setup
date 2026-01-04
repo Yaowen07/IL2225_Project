@@ -1,2 +1,20 @@
+set SynopsysHome /opt/tools/synopsys/syn/V-2023.12-SP4
+set lib_name "GF22FDX_SC8T_104CPP_BASE_CSC28L_FFG_0P72V_0P00V_0P00V_0P00V_M40C_ccs.db"
+set search_path "/opt/tools/synopsys/syn/V-2023.12-SP4/libraries/syn\
+                /opt/pdk/gfip/22FDX-EXT/GF22FDX_SC8T_104CPP_BASE_CSC28L_FDK_RELV06R60/model/timing/ccs_db"
 
+set synlib "/opt/tools/synopsys/syn/V-2023.12-SP4/libraries/syn/dw_foundation.sldb"
+set stdlib "/opt/tools/synopsys/syn/V-2023.12-SP4/libraries/syn/standard.sldb"
+set synthetic_library "${synthetic_library} $synlib $stdlib"
 
+set OP_CONDS "GF22FDX_SC8T_104CPP_BASE_CSC28L_TT_0P80V_0P00V_0P45V_M0P45V_25C"
+
+# SYNTH VHDL FILE DEFAULTS
+set view_read_file_suffix "db sdb edif sedif vhd vhdl st script"
+set view_analyze_file_suffix "v vhd vhdl"
+set template_parameter_style "%d"; # Limits the lenght of comp. names
+
+set target_library "${lib_name}"
+set link_library "* ${lib_name} ${synthetic_library}"
+
+define_design_lib WORK -path "./WORK"

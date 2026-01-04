@@ -6,6 +6,12 @@ Then Run Questasim with :
 vsim -do simulation.tcl
 ```
 ## Task 2
+Change the work directory to `./SiLagoNN/exe` 
+Change the clock period in the constraint `./SiLagoNN/syn/constraints.sdc` 
+Then Run DC Shell with :  
+```
+dc_shell -f ../syn/scr/dc_flat.tcl
+```
 ## Task 3
 ## Task 4
 ## Task 5
