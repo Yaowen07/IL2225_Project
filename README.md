@@ -20,5 +20,10 @@ Then Run DC Shell with :
 dc_shell -f ../syn/scr/dc_bottomup.tcl
 ```
 ## Task 4
+Change the work directory to `./SiLagoNN/exe` 
+In innovus bash :  
+```
+source ../phy/scr/flat_imp.tcl
+```
 ## Task 5
 ## Task 6
