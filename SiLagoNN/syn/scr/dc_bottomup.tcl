@@ -30,7 +30,7 @@
 ################################################################################
 
 # Clean temp files inside exe folder
-set exe_dir ../../exe
+set exe_dir ./
 
 foreach item [glob -nocomplain -directory $exe_dir * .*] {
     set name [file tail $item]
@@ -46,7 +46,7 @@ foreach item [glob -nocomplain -directory $exe_dir * .*] {
 remove_design -all
 
 # load synopsys config
-source ../synopsys_dc.setup
+source ../syn/synopsys_dc.setup
 
 #EXECUTE N PASSES. DECIDE ON A REASONABLE N.
 proc nth_pass {n} {
@@ -57,18 +57,18 @@ proc nth_pass {n} {
     set prev_n [expr {$n - 1}]
 
     # Packages
-    analyze -format vhdl -lib WORK {"../../rtl/hw_setting.vhd"}	
+    analyze -format vhdl -lib WORK {"../rtl/hw_setting.vhd"}	
 
-    analyze -format vhdl -lib WORK {"../../rtl/mtrf/isa.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/mtrf/misc.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/mtrf/top_consts_types_package.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/mtrf/util_package.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/functions.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/mtrf/tb_instructions.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/dimarch/noc_types_n_constants.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/dimarch/crossbar_types_n_constants.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/mtrf/DPU/DPU_pkg.vhd"}
-    analyze -format vhdl -lib WORK {"../../rtl/mtrf/seq_functions_package.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/mtrf/isa.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/mtrf/misc.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/mtrf/top_consts_types_package.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/mtrf/util_package.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/functions.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/mtrf/tb_instructions.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/dimarch/noc_types_n_constants.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/dimarch/crossbar_types_n_constants.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/mtrf/DPU/DPU_pkg.vhd"}
+    analyze -format vhdl -lib WORK {"../rtl/mtrf/seq_functions_package.vhd"}
 
     # Compile REGISTER_F
     analyze -format vhdl -lib WORK {"../rtl/mtrf/AGU_RFblock.vhd"}
@@ -87,9 +87,9 @@ proc nth_pass {n} {
     current_design register_file_top
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/register_file_top_${prev_n}.wscr
+        source ../syn/db/register_file_top_${prev_n}.wscr
     }
     compile
 
@@ -113,9 +113,9 @@ proc nth_pass {n} {
     current_design sequencer
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/sequencer_${prev_n}.wscr
+        source ../syn/db/sequencer_${prev_n}.wscr
     }
     compile
 
@@ -154,9 +154,9 @@ proc nth_pass {n} {
     current_design DPU
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/DPU_${prev_n}.wscr
+        source ../syn/db/DPU_${prev_n}.wscr
     }
     compile
 
@@ -169,9 +169,9 @@ proc nth_pass {n} {
     current_design MTRF_cell
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/MTRF_cell_${prev_n}.wscr
+        source ../syn/db/MTRF_cell_${prev_n}.wscr
     }
     dont_touch register_file_top true
     dont_touch sequencer true
@@ -184,9 +184,9 @@ proc nth_pass {n} {
     current_design cell_config_swb
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/cell_config_swb_${prev_n}.wscr
+        source ../syn/db/cell_config_swb_${prev_n}.wscr
     }
     compile
 
@@ -198,9 +198,9 @@ proc nth_pass {n} {
     current_design switchbox
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/switchbox_${prev_n}.wscr
+        source ../syn/db/switchbox_${prev_n}.wscr
     }
     compile
 
@@ -210,9 +210,9 @@ proc nth_pass {n} {
     current_design silego
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/silego_${prev_n}.wscr
+        source ../syn/db/silego_${prev_n}.wscr
     }
     dont_touch MTRF_cell true
     dont_touch cell_config_swb true
@@ -225,9 +225,9 @@ proc nth_pass {n} {
     current_design data_selector
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/data_selector_${prev_n}.wscr
+        source ../syn/db/data_selector_${prev_n}.wscr
     }
     compile
 
@@ -237,9 +237,9 @@ proc nth_pass {n} {
     current_design bus_selector
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/bus_selector_${prev_n}.wscr
+        source ../syn/db/bus_selector_${prev_n}.wscr
     }
     compile
 
@@ -249,9 +249,9 @@ proc nth_pass {n} {
     current_design addr_assign
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/addr_assign_${prev_n}.wscr
+        source ../syn/db/addr_assign_${prev_n}.wscr
     }
     compile
 
@@ -263,9 +263,9 @@ proc nth_pass {n} {
     current_design Silago_top_left_corner
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/Silago_top_left_corner_${prev_n}.wscr
+        source ../syn/db/Silago_top_left_corner_${prev_n}.wscr
     }
     dont_touch silego true
     dont_touch data_selector true
@@ -279,9 +279,9 @@ proc nth_pass {n} {
     current_design Silago_top
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/Silago_top_${prev_n}.wscr
+        source ../syn/db/Silago_top_${prev_n}.wscr
     }
     dont_touch silego true
     dont_touch data_selector true
@@ -295,9 +295,9 @@ proc nth_pass {n} {
     current_design Silago_top_right_corner
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/Silago_top_right_corner_${prev_n}.wscr
+        source ../syn/db/Silago_top_right_corner_${prev_n}.wscr
     }
     dont_touch silego true
     dont_touch data_selector true
@@ -311,9 +311,9 @@ proc nth_pass {n} {
     current_design Silago_bot_left_corner
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/Silago_bot_left_corner_${prev_n}.wscr
+        source ../syn/db/Silago_bot_left_corner_${prev_n}.wscr
     }
     dont_touch silego true
     dont_touch data_selector true
@@ -327,9 +327,9 @@ proc nth_pass {n} {
     current_design Silago_bot
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/Silago_bot_${prev_n}.wscr
+        source ../syn/db/Silago_bot_${prev_n}.wscr
     }
     dont_touch silego true
     dont_touch data_selector true
@@ -343,9 +343,9 @@ proc nth_pass {n} {
     current_design Silago_bot_right_corner
     link
     uniquify
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
     if  {$n > 1} {
-        source ../db/Silago_bot_right_corner_${prev_n}.wscr
+        source ../syn/db/Silago_bot_right_corner_${prev_n}.wscr
     }
     dont_touch silego true
     dont_touch data_selector true
@@ -359,7 +359,7 @@ proc nth_pass {n} {
     elaborate drra_wrapper
     current_design drra_wrapper
     link
-    source ../constraints.sdc
+    source ../syn/constraints.sdc
 
     #check if the constraints are met
     report_constraint
@@ -387,37 +387,37 @@ proc nth_pass {n} {
         }
 
     current_design register_file_top
-    write_script > ../db/register_file_top_${n}.wscr
+    write_script > ../syn/db/register_file_top_${n}.wscr
     current_design sequencer
-    write_script > ../db/sequencer_${n}.wscr
+    write_script > ../syn/db/sequencer_${n}.wscr
     current_design DPU
-    write_script > ../db/DPU_${n}.wscr
+    write_script > ../syn/db/DPU_${n}.wscr
     current_design MTRF_cell
-    write_script > ../db/MTRF_cell_${n}.wscr
+    write_script > ../syn/db/MTRF_cell_${n}.wscr
     current_design cell_config_swb
-    write_script > ../db/cell_config_swb_${n}.wscr
+    write_script > ../syn/db/cell_config_swb_${n}.wscr
     current_design switchbox
-    write_script > ../db/switchbox_${n}.wscr
+    write_script > ../syn/db/switchbox_${n}.wscr
     current_design silego
-    write_script > ../db/silego_${n}.wscr
+    write_script > ../syn/db/silego_${n}.wscr
     current_design data_selector
-    write_script > ../db/data_selector_${n}.wscr
+    write_script > ../syn/db/data_selector_${n}.wscr
     current_design bus_selector
-    write_script > ../db/bus_selector_${n}.wscr
+    write_script > ../syn/db/bus_selector_${n}.wscr
     current_design addr_assign
-    write_script > ../db/addr_assign_${n}.wscr
+    write_script > ../syn/db/addr_assign_${n}.wscr
     current_design Silago_top_left_corner
-    write_script > ../db/Silago_top_left_corner_${n}.wscr
+    write_script > ../syn/db/Silago_top_left_corner_${n}.wscr
     current_design Silago_top
-    write_script > ../db/Silago_top_${n}.wscr
+    write_script > ../syn/db/Silago_top_${n}.wscr
     current_design Silago_top_right_corner
-    write_script > ../db/Silago_top_right_corner_${n}.wscr
+    write_script > ../syn/db/Silago_top_right_corner_${n}.wscr
     current_design Silago_bot_left_corner
-    write_script > ../db/Silago_bot_left_corner_${n}.wscr
+    write_script > ../syn/db/Silago_bot_left_corner_${n}.wscr
     current_design Silago_bot
-    write_script > ../db/Silago_bot_${n}.wscr
+    write_script > ../syn/db/Silago_bot_${n}.wscr
     current_design Silago_bot_right_corner
-    write_script > ../db/Silago_bot_right_corner_${n}.wscr
+    write_script > ../syn/db/Silago_bot_right_corner_${n}.wscr
 
 }
 
@@ -425,7 +425,7 @@ puts "First pass"
 nth_pass 1
 nth_pass 2
 current_design drra_wrapper
-report_power > ../rpt/area.txt
-report_power > ../rpt/power.txt
-report_timing > ../rpt/timing.txt
-write_file -format verilog -hier -output ../db/drra_wrapper.v
+report_power > ../syn/rpt/area.txt
+report_power > ../syn/rpt/power.txt
+report_timing > ../syn/rpt/timing.txt
+write_file -format verilog -hier -output ../syn/db/drra_wrapper.v

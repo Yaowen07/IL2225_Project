@@ -30,7 +30,7 @@
 ################################################################################
 #
 # Clean temp files inside exe folder
-set exe_dir ../../exe
+set exe_dir ./
 
 foreach item [glob -nocomplain -directory $exe_dir * .*] {
     set name [file tail $item]
@@ -45,10 +45,10 @@ foreach item [glob -nocomplain -directory $exe_dir * .*] {
 #
 #
 # set global libraries                                                                                                                                                                                                                                                              
-source ../synopsys_dc.setup
+source ../syn/synopsys_dc.setup
 
-set SOURCE_DIR          ../../rtl;                # rtl code that should be synthesised
-set SYN_DIR                 ../;                   # synthesis directory
+set SOURCE_DIR          ../rtl;                # rtl code that should be synthesised
+set SYN_DIR                 ../syn;                   # synthesis directory
 set OUT_DIR                ${SYN_DIR}/db;           # output files: netlist, sdf sdc etc.
 set REPORT_DIR          ${SYN_DIR}/rpt;      # synthesis reports: timing, area, etc.
 
