@@ -14,4 +14,4 @@ assign_io_pins
 route_design
 write_db ../phy/db/drra_wrapper_flat.dat
 write_netlist ../phy/db/drra_wrapper_flat.v
-report_power
+report_power > ../phy/rpt/drra_wrapper_flat_power.txt
