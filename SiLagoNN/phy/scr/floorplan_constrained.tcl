@@ -21,21 +21,22 @@
 #}
 
 set margin 20
-# Area from syn 450_000, utilization use 0.69
-set dim 330
+# Area from falt syn 450_000, bottom-up syn 480_000 (select bottom-up),utilization use 0.69
+set dim 210;# sqaure root (480_000/16/0.69)
 
-# 2*3 layout
-create_floorplan -site SC8T_104CPP_CMOS22FDX -core_size [expr {2*$margin + 3*$dim}] [expr {2*$margin + 2*$dim}] $margin $margin $margin $margin -no_snap_to_grid
+# 2*8 layout
+#create_floorplan -site SC8T_104CPP_CMOS22FDX -core_size [expr {2*$margin + 8*$dim}] [expr {2*$margin + 2*$dim}] $margin $margin $margin $margin -no_snap_to_grid
+create_floorplan -site SC8T_104CPP_CMOS22FDX -core_size [expr {8*$dim}] [expr {2*$dim}] $margin $margin $margin $margin -no_snap_to_grid
 
 
-for {set i 0} {$i < 6} {incr i} {
-    if {$i < 3} {
+for {set i 0} {$i < 16} {incr i} {
+    if {$i < 8} {
         set x1 [expr {double($margin + $dim * $i)}]
         set y1 [expr {double($margin + $dim)}]
         set x2 [expr {double($x1 + $dim)}]
         set y2 [expr {double($y1 + $dim)}]
     } else {
-        set x1 [expr {double($margin + $dim * $i)}]
+        set x1 [expr {double($margin + $dim * ($i - 8))}]
         set y1 [expr {double($margin)}]
         set x2 [expr {double($x1 + $dim)}]
         set y2 [expr {double($y1 + $dim)}]

@@ -48,6 +48,13 @@ remove_design -all
 # load synopsys config
 source ../syn/synopsys_dc.setup
 
+# Design specific variables
+set TOP_NAME drra_wrapper
+set SOURCE_DIR          ../rtl;                # rtl code that should be synthesised
+set SYN_DIR                 ../syn;                   # synthesis directory
+set OUT_DIR                ${SYN_DIR}/db;           # output files: netlist, sdf sdc etc.
+set REPORT_DIR          ${SYN_DIR}/rpt;      # synthesis reports: timing, area, etc.
+
 #EXECUTE N PASSES. DECIDE ON A REASONABLE N.
 proc nth_pass {n} {
 	#Hint: Write constraints for some reasonably big modules. E.g: divider_pipe and silego.
@@ -425,7 +432,19 @@ puts "First pass"
 nth_pass 1
 nth_pass 2
 current_design drra_wrapper
-report_power > ../syn/rpt/area.txt
-report_power > ../syn/rpt/power.txt
-report_timing > ../syn/rpt/timing.txt
-write_file -format verilog -hier -output ../syn/db/drra_wrapper.v
+
+# Report
+report_area > ${REPORT_DIR}/${TOP_NAME}_area.txt
+report_cell > ${REPORT_DIR}/${TOP_NAME}_cells.txt
+report_timing > ${REPORT_DIR}/${TOP_NAME}_timing.txt
+report_power > ${REPORT_DIR}/${TOP_NAME}_power.txt
+report_constraints > ${REPORT_DIR}/${TOP_NAME}_constratints.sdc
+
+
+# Export netlist
+write -hierarchy -format ddc -output ${OUT_DIR}/${TOP_NAME}.ddc
+write -hierarchy -format verilog -output ${OUT_DIR}/${TOP_NAME}.v
+#report_power > ../syn/rpt/area.txt
+#report_power > ../syn/rpt/power.txt
+#report_timing > ../syn/rpt/timing.txt
+#write_file -format verilog -hier -output ../syn/db/drra_wrapper.v

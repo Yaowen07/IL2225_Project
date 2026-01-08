@@ -15,6 +15,7 @@ dc_shell -f ../syn/scr/dc_flat.tcl
 ## Task 3
 Change the work directory to `./SiLagoNN/exe` 
 Change the clock period in the constraint `./SiLagoNN/syn/constraints.sdc` 
+***Clean and move results ../syn/db and rpt from Task 2.***  
 Then Run DC Shell with :  
 ```
 dc_shell -f ../syn/scr/dc_bottomup.tcl
@@ -26,4 +27,9 @@ In innovus bash :
 source ../phy/scr/flat_imp.tcl
 ```
 ## Task 5
+Change the work directory to `./SiLagoNN/exe` 
+In innovus bash :  
+```
+    source ../phy/scr/partition.tcl
+```
 ## Task 6
