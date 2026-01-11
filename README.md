@@ -33,3 +33,19 @@ In innovus bash :
     source ../phy/scr/partition.tcl
 ```
 ## Task 6
+### Sub Partition
+Change the work directory to `./SiLagoNN/exe` 
+In bash :  
+```
+    bash  ../phy/scr/pnr_partition.sh
+```
+Check backgroud cpu threads for the progress.
+### Top  Partition
+Change the work directory to `./SiLagoNN/exe` 
+In innovus bash :  
+```
+    source ../phy/scr/pnr_top.tcl
+```
+**Blocked here**
+
+

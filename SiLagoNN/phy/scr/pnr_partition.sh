@@ -4,6 +4,7 @@
 #4. It is not required to use this script for this project. But interested students can use it and see the benefits of automating tasks.
 #5. Feel free to use Google or ChatGPT to understand the commands :)
 
+TOP_NAME=drra_wrapper
 partition_list="$(ls ../phy/db/part/*enc | grep -v ${TOP_NAME})"
 
 for partition in ${partition_list}

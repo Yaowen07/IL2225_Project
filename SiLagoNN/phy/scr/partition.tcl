@@ -1,6 +1,7 @@
 source ../phy/scr/read_design.tcl
 source ../phy/scr/design_variables.tcl
 source ../phy/scr/floorplan_constrained.tcl
+source ../phy/scr/power_plan.tcl
 
 
 foreach part_hinst ${partition_hinst_list} {
@@ -15,7 +16,7 @@ foreach part_hinst ${partition_hinst_list} {
 #2. align partitions
 #3. assign partition pins
 #4. assign io pins
-align_partition_clones -update_user_grid -pg_horizontal_grid -pg_vertical_grid
+align_partition_clones -snap_all_corners -update_user_grid -pg_horizontal_grid -pg_vertical_grid
 
 assign_partition_pins
 assign_io_pins
