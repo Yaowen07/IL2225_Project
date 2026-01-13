@@ -21,28 +21,43 @@ Then Run DC Shell with :
 dc_shell -f ../syn/scr/dc_bottomup.tcl
 ```
 ## Task 4
-Change the work directory to `./SiLagoNN/exe` 
-In innovus bash :  
+1. Open Terminal and change the work directory to `./SiLagoNN/exe` 
+2. Launch Innovus
+```
+innovus -stylus
+```
+3. Call script in innovus bash :  
 ```
 source ../phy/scr/flat_imp.tcl
 ```
 ## Task 5
-Change the work directory to `./SiLagoNN/exe` 
-In innovus bash :  
+1. Open Terminal and change the work directory to `./SiLagoNN/exe` 
+2. Launch Innovus
+```
+innovus -stylus
+```
+3. Call script in innovus bash :  
 ```
     source ../phy/scr/partition.tcl
 ```
 ## Task 6
 ### Sub Partition
-Change the work directory to `./SiLagoNN/exe` 
-In bash :  
+1. Open Terminal and change the work directory to `./SiLagoNN/exe` 
+2. In the Terminal bash :  
 ```
     bash  ../phy/scr/pnr_partition.sh
 ```
-Check backgroud cpu threads for the progress.
+3. Check backgroud cpu threads for the progress.
+```
+    top
+```
 ### Top  Partition
-Change the work directory to `./SiLagoNN/exe` 
-In innovus bash :  
+1. Open Terminal and change the work directory to `./SiLagoNN/exe` 
+2. Launch Innovus
+```
+innovus -stylus
+```
+3. Call script in innovus bash :  
 ```
     source ../phy/scr/pnr_top.tcl
 ```
