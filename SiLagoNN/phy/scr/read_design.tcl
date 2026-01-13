@@ -13,5 +13,7 @@ set_db init_ground_nets {VSS}
 #7. read logic synthesis netlist
 read_mmmc ${MMMC_FILE}
 read_physical -lef ${LEF_FILE}
+#Add bottom up syn netlist support
+set_db init_design_uniquify true
 read_netlist ${NETLIST_FILE}
 init_design
