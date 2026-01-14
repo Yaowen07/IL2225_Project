@@ -1,5 +1,5 @@
-source ../phy/scr/global_variables.tcl
-#set TOP_NAME drra_wrapper
+#source ../phy/scr/global_variables.tcl
+set TOP_NAME drra_wrapper
 source ../phy/scr/design_variables.tcl
 
 cd ../phy/db/part
