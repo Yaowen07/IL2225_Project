@@ -8,3 +8,7 @@ read_db ../phy/db/part/${TOP_NAME}.enc.dat/pnr
 foreach module $partition_module_list {
     assemble_design -block_dir ../phy/db/part/${module}.enc.dat/pnr -encounter_format     
 }
+
+report_power > ../phy/rpt/drra_wrapper_pnr_power.txt
+report_area > ../phy/rpt/drra_wrapper_pnr_area.txt
+report_timing > ../phy/rpt/drra_wrapper_pnr_timing.txt

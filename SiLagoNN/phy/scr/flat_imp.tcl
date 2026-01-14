@@ -15,3 +15,5 @@ route_design
 write_db ../phy/db/drra_wrapper_flat.dat
 write_netlist ../phy/db/drra_wrapper_flat.v
 report_power > ../phy/rpt/drra_wrapper_flat_power.txt
+report_area > ../phy/rpt/drra_wrapper_flat_area.txt
+report_timing > ../phy/rpt/drra_wrapper_flat_timing.txt
