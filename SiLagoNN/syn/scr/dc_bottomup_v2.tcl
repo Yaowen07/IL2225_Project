@@ -58,6 +58,11 @@ set REPORT_DIR          ${SYN_DIR}/rpt;      # synthesis reports: timing, area, 
 #EXECUTE N PASSES. DECIDE ON A REASONABLE N.
 proc nth_pass {n} {
 	#Hint: Write constraints for some reasonably big modules. E.g: divider_pipe and silego.
+  global SYN_DIR
+	global SOURCE_DIR
+	global OUT_DIR
+	global REPORT_DIR
+	global TOP_NAME
 	
 	#Hint: Compile only the unique tiles
     
