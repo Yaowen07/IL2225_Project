@@ -222,8 +222,8 @@ report_constraints > ${REPORT_DIR}/${TOP_NAME}_constratints.sdc
 
 
 # Export netlist
-write -hierarchy -format ddc -output ${OUT_DIR}/${TOP_NAME}.ddc
-write -hierarchy -format verilog -output ${OUT_DIR}/${TOP_NAME}.v
+write -format ddc -output ${OUT_DIR}/${TOP_NAME}.ddc
+write -format verilog -output ${OUT_DIR}/${TOP_NAME}.v
 write_sdf ${OUT_DIR}/${TOP_NAME}.sdf
 write_sdc ${OUT_DIR}/${TOP_NAME}.sdc
 #report_power > ../syn/rpt/area.txt
