@@ -1,0 +1,227 @@
+################################################################################
+# Design Compiler bottom-up logic synthesis script
+################################################################################
+#
+# This script is meant to be executed with the following directory structure
+#
+# project_top_folder
+# |
+# |- db: store output data like mapped designs or physical files like GDSII
+# |
+# |- phy: physical synthesis material (scripts, pins, etc)
+# |
+# |- rtl: contains rtl code for the design, it should also contain a
+# |       hierarchy.txt file with the all the files that compose the design
+# |
+# |- syn: logic synthesis material (this script, SDC constraints, etc)
+# |
+# |- sim: simulation stuff like waveforms, reports, coverage etc.
+# |
+# |- tb: testbenches for the rtl code
+# |
+# |- exe: the directory where it should be executed. This keeps all the temp files
+#         created by DC in that directory
+#
+#
+# The standard way of executing the is from the project_top_folder
+# with the following command
+#
+# $ dc_shell -f ../syn/dc_flat.tcl
+################################################################################
+
+# Clean temp files inside exe folder
+set exe_dir ./
+
+foreach item [glob -nocomplain -directory $exe_dir * .*] {
+    set name [file tail $item]
+
+    # Skip current/parent dir and .gitkeep
+    if {$name in {. .. .gitkeep}} {
+        continue
+    }
+
+    file delete -force $item
+}
+
+remove_design -all
+
+# load synopsys config
+source ../syn/synopsys_dc.setup
+
+# Design specific variables
+set TOP_NAME drra_wrapper
+set SOURCE_DIR          ../rtl;                # rtl code that should be synthesised
+set SYN_DIR                 ../syn;                   # synthesis directory
+set OUT_DIR                ${SYN_DIR}/db;           # output files: netlist, sdf sdc etc.
+set REPORT_DIR          ${SYN_DIR}/rpt;      # synthesis reports: timing, area, etc.
+
+#EXECUTE N PASSES. DECIDE ON A REASONABLE N.
+proc nth_pass {n} {
+	#Hint: Write constraints for some reasonably big modules. E.g: divider_pipe and silego.
+	
+	#Hint: Compile only the unique tiles
+    
+    set prev_n [expr {$n - 1}]
+	exec rm -rf ${OUT_DIR}/pass${n}
+	exec mkdir -p ${OUT_DIR}/pass${n}
+	remove_design -all
+	
+	# Anayze the files in ${SOURCE_DIR}/pkg_hierarchy.txt
+	set hierarchy_files [split [read [open ${SOURCE_DIR}/pkg_hierarchy.txt r]] "\n"]
+	foreach filename [lrange ${hierarchy_files} 0 end-1] {
+	    if {![string equal [string index $filename 0] "#"]} {
+	        if {[string equal [file extension $filename] ".vhd"]} {
+	            analyze -format vhdl -lib WORK ${SOURCE_DIR}/${filename}
+	        } elseif {[string equal [file extension $filename] ".v"]} {
+	            analyze -format verilog -lib WORK ${SOURCE_DIR}/${filename}
+	        }
+	    }
+	}
+	# Compile the divider pipe, ${SOURCE_DIR}/mtrf/DPU/divider_pipe.vhd. We would like to import constraints in the next pass over divider pipe
+	analyze -format vhdl -lib WORK ${SOURCE_DIR}/mtrf/DPU/divider_pipe.vhd
+	elaborate divider_pipe
+	current_design divider_pipe
+	link
+	uniquify
+	if  {$n > 1} {
+	    source ${OUT_DIR}/pass${prev_n}/divider_pipe.wscr
+	}
+	source ${SYN_DIR}/constraints.sdc
+	compile
+	
+	# Compile the "silego" entity
+	# Hint: analyze the files in ${SOURCE_DIR}/silego_hierarchy.txt. elaborate the design silego, set current_design to silego, link, uniquify, source global constraints, source constraints from previous pass, set dont_touch for divider pipe and compile
+	set hierarchy_files [split [read [open ${SOURCE_DIR}/silego_hierarchy.txt r]] "\n"]
+	foreach filename [lrange ${hierarchy_files} 0 end-1] {
+	    if {![string equal [string index $filename 0] "#"]} {
+	        if {[string equal [file extension $filename] ".vhd"]} {
+	            analyze -format vhdl -lib WORK ${SOURCE_DIR}/${filename}
+	        } elseif {[string equal [file extension $filename] ".v"]} {
+	            analyze -format verilog -lib WORK ${SOURCE_DIR}/${filename}
+	        }
+	    }
+	}
+	elaborate silego
+	current_design silego
+	link
+	uniquify
+	if  {$n > 1} {
+	    source ${OUT_DIR}/pass${prev_n}/silego.wscr
+	}
+	source ${SYN_DIR}/constraints.sdc
+	dont_touch divider_pipe true
+	compile
+	
+    # Compile all the Silago tile files
+	# Hint: Compile each tile one by one. Analyze and elaborate the tile design, set current_design to that tile, link, uniquify, source global constraints, source constraints from previous pass, set dont_touch for divider pipe, silego and compile
+	analyze -format vhdl -lib WORK ${SOURCE_DIR}/mtrf/Silago_top_left_corner.vhd
+	elaborate Silago_top_left_corner
+	current_design Silago_top_left_corner
+	link
+	uniquify
+	source ${SYN_DIR}/constraints.sdc
+	dont_touch divider_pipe true
+	dont_touch silego true
+	compile
+
+	analyze -format vhdl -lib WORK ${SOURCE_DIR}/mtrf/Silago_top.vhd
+	elaborate Silago_top
+	current_design Silago_top
+	link
+	uniquify
+	source ${SYN_DIR}/constraints.sdc
+	dont_touch divider_pipe true
+	dont_touch silego true
+	compile
+
+	analyze -format vhdl -lib WORK ${SOURCE_DIR}/mtrf/Silago_top_right_corner.vhd
+	elaborate Silago_top_right_corner
+	current_design Silago_top_right_corner
+	link
+	uniquify
+	source ${SYN_DIR}/constraints.sdc
+	dont_touch divider_pipe true
+	dont_touch silego true
+	compile
+
+	analyze -format vhdl -lib WORK ${SOURCE_DIR}/mtrf/Silago_bot_left_corner.vhd
+	elaborate Silago_bot_left_corner
+	current_design Silago_bot_left_corner
+	link
+	uniquify
+	source ${SYN_DIR}/constraints.sdc
+	dont_touch divider_pipe true
+	dont_touch silego true
+	compile
+
+	analyze -format vhdl -lib WORK ${SOURCE_DIR}/mtrf/Silago_bot.vhd
+	elaborate Silago_bot
+	current_design Silago_bot
+	link
+	uniquify
+	source ${SYN_DIR}/constraints.sdc
+	dont_touch divider_pipe true
+	dont_touch silego true
+	compile
+
+	analyze -format vhdl -lib WORK ${SOURCE_DIR}/mtrf/Silago_bot_right_corner.vhd
+	elaborate Silago_bot_right_corner
+	current_design Silago_bot_right_corner
+	link
+	uniquify
+	source ${SYN_DIR}/constraints.sdc
+	dont_touch divider_pipe true
+	dont_touch silego true
+	compile
+
+	# Analyze, elaborate the DRRA wrapper 
+	# Hint: Analyze and elaborate the design, set current_design to the wrapper, link, source global constraints, set dont_touch for divider pipe, silego, all the tiles, DO NOT UNIQUIFY OR COMPILE! The design is already compiled as all the components are already compiled and there is no logic in wrapper outside of the tiles.
+	analyze -format vhdl -lib WORK ${SOURCE_DIR}/mtrf/drra_wrapper.vhd
+	elaborate drra_wrapper
+	link
+	source ${SYN_DIR}/constraints.sdc
+	dont_touch divider_pipe true
+	dont_touch silego true
+	dont_touch Silago_top_left_corner true
+	dont_touch Silago_top true
+	dont_touch Silago_top_right_corner true
+	dont_touch Silago_bot_left_corner true
+	dont_touch Silago_bot true
+	dont_touch Silago_bot_right_corner true
+	
+    #report timing of drra wrapper in the current pass
+	report_timing > ${OUT_DIR}/pass${n}/drra_wrapper_timing.txt
+	
+    #characterizing the constraints 
+	characterize -constraints {Silago_bot_l_corner_inst_0_1/SILEGO_cell \
+	                           Silago_bot_l_corner_inst_0_1/SILEGO_cell/MTRF_cell/dpu_gen/U_NACU_0/U_divider}
+	current_design divider_pipe
+	puts "write script"
+	write_script > ${OUT_DIR}/pass${n}/divider_pipe.wscr
+	current_design silego
+	write_script > ${OUT_DIR}/pass${n}/silego.wscr
+    # Packages
+
+}
+
+puts "First pass"
+nth_pass 1
+current_design drra_wrapper
+
+# Report
+report_area > ${REPORT_DIR}/${TOP_NAME}_area.txt
+report_cell > ${REPORT_DIR}/${TOP_NAME}_cells.txt
+report_timing > ${REPORT_DIR}/${TOP_NAME}_timing.txt
+report_power > ${REPORT_DIR}/${TOP_NAME}_power.txt
+report_constraints > ${REPORT_DIR}/${TOP_NAME}_constratints.sdc
+
+
+# Export netlist
+write -hierarchy -format ddc -output ${OUT_DIR}/${TOP_NAME}.ddc
+write -hierarchy -format verilog -output ${OUT_DIR}/${TOP_NAME}.v
+write_sdf ${OUT_DIR}/${TOP_NAME}.sdf
+write_sdc ${OUT_DIR}/${TOP_NAME}.sdc
+#report_power > ../syn/rpt/area.txt
+#report_power > ../syn/rpt/power.txt
+#report_timing > ../syn/rpt/timing.txt
+#write_file -format verilog -hier -output ../syn/db/drra_wrapper.v
